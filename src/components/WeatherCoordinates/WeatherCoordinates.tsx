@@ -1,10 +1,13 @@
-/* import React from "react";
+import React from "react";
 import { View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
 import { useNavigation } from "@react-navigation/native";
 import { Controller, useForm } from "react-hook-form";
-import { Button } from "..";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+
+import Button from "../Button/Button";
 import { Colors } from "../../utils/constants";
 
 type FormValues = {
@@ -12,7 +15,12 @@ type FormValues = {
   longitude: string;
 };
 
-const WeatherCardinates = () => {
+const validationSchema = Yup.object().shape({
+  latitude: Yup.number(),
+  longitude: Yup.number(),
+});
+
+const WeatherCoordinates = () => {
   const navigation = useNavigation();
 
   const defaultValues: FormValues = {
@@ -21,6 +29,7 @@ const WeatherCardinates = () => {
   };
 
   const form = useForm<FormValues>({
+    resolver: yupResolver(validationSchema),
     defaultValues,
     mode: "onChange",
   });
@@ -38,7 +47,7 @@ const WeatherCardinates = () => {
       >
         <Controller
           control={form.control}
-          render={({ onChange, ...props }) => (
+          render={({ field: { onChange }, ...props }) => (
             <TextInput
               {...props}
               testID="weather-coordinates-latitude"
@@ -61,7 +70,7 @@ const WeatherCardinates = () => {
         />
         <Controller
           control={form.control}
-          render={({ onChange, ...props }) => (
+          render={({ field: { onChange }, ...props }) => (
             <TextInput
               {...props}
               testID="weather-coordinates-longitude"
@@ -88,9 +97,12 @@ const WeatherCardinates = () => {
   );
 };
 
-export default WeatherCardinates; */
+export default WeatherCoordinates;
 
-import React from "react";
+// ALTERNATIVE - CODE TESTED WITHOUT USING HOOK FORM!
+//
+//
+/* import React from "react";
 import { View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
@@ -157,3 +169,4 @@ const WeatherCardinates = () => {
 };
 
 export default WeatherCardinates;
+ */
