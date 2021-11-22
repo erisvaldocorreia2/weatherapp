@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
 import { useNavigation } from "@react-navigation/native";
@@ -16,8 +16,8 @@ type FormValues = {
 };
 
 const validationSchema = Yup.object().shape({
-  latitude: Yup.number(),
-  longitude: Yup.number(),
+  latitude: Yup.number().min(-90).max(90),
+  longitude: Yup.number().min(-90).max(90),
 });
 
 const WeatherCoordinates = () => {
@@ -31,7 +31,7 @@ const WeatherCoordinates = () => {
   const form = useForm<FormValues>({
     resolver: yupResolver(validationSchema),
     defaultValues,
-    mode: "onChange",
+    mode: "all",
   });
 
   const handleSubmit = form.handleSubmit((values) => {
@@ -68,6 +68,11 @@ const WeatherCoordinates = () => {
           )}
           name="latitude"
         />
+        {form.formState.errors.latitude && (
+          <Text style={{ marginHorizontal: 5, color: Colors.ERROR }}>
+            Latitude must be a valid number
+          </Text>
+        )}
         <Controller
           control={form.control}
           render={({ field: { onChange }, ...props }) => (
@@ -91,6 +96,11 @@ const WeatherCoordinates = () => {
           )}
           name="longitude"
         />
+        {form.formState.errors.longitude && (
+          <Text style={{ marginHorizontal: 5, color: Colors.ERROR }}>
+            Longitude must be a valid number
+          </Text>
+        )}
       </View>
       <Button onPress={handleSubmit} label="Find" />
     </View>
@@ -102,16 +112,7 @@ export default WeatherCoordinates;
 // ALTERNATIVE - CODE TESTED WITHOUT USING HOOK FORM!
 //
 //
-/* import React from "react";
-import { View } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
-import { useNavigation } from "@react-navigation/native";
-
-import { Colors } from "../../utils/constants";
-import { Button } from "..";
-
-const WeatherCardinates = () => {
-  const navigation = useNavigation();
+/* 
   const [latitude, setLatitude] = React.useState(0);
   const [longitude, setLongitude] = React.useState(0);
 
@@ -122,13 +123,6 @@ const WeatherCardinates = () => {
     });
   };
 
-  return (
-    <View testID={"weather-cardinates"}>
-      <View
-        style={{
-          marginBottom: 15,
-        }}
-      >
         <TextInput
           testID="weather-coordinates-latitude"
           onChangeText={(e) => setLatitude(parseInt(e))}
@@ -162,11 +156,4 @@ const WeatherCardinates = () => {
             color: Colors.WHITE,
           }}
         />
-      </View>
-      <Button onPress={handleSubmit} label="Find" />
-    </View>
-  );
-};
-
-export default WeatherCardinates;
  */
